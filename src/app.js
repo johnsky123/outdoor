@@ -35,21 +35,40 @@ $(function(){
 	})
     $('.amap-copyright').css({display:'none'});
 	var parkOnff=true;
+
 	$('.footIcotwo').bind('touchstart',function(){
         $.ajax({
             type: "post",
             url: "http://222.73.146.46:8089/carseeker/nearPark/getNearParking",
-            data:'',
+            data:{longitude:lng,latitude:lat,radius:'5'},
             dataType: "JSON",
-            success: function(tmpToken) {
-                wx.config({
-                    debug: true,
-                    appId: 'wx964b4b8128753063',
-                    timestamp: tmpToken.timestamp,
-                    nonceStr: tmpToken.nonceStr,
-                    signature: tmpToken.signature,
-                    jsApiList: ['startSearchBeacons','onMenuShareTimeline','checkJsApi','onSearchBeacons','hideOptionMenu']
-                });
+            success: function(e){
+                  if(e !== null){
+                      console.log(e);
+                    if(parkOnff){
+                        console.log(e[0].name);
+                        var Index=0;
+                        e.forEach(function(){
+                            $('.ParkWrap').append('<div class="PmesBox"><div class="MesOneleft"><span class="ParkTitle">上海证券大厦停车场</span><div class="IcoPar"><a class="icoOne">车位：</a><span class="livingParking">28</span>/<span class="totalcount">100</span></div></div><div class="MesOneright"><img src="assets/images/btn_reservations%402x.png"></div></div>');
+                            $('.ParkTitle').last().html(e[Index].name);
+                            $('.livingParking').last().html(e[Index].empty);
+                            $('.totalcount').last().html((e[Index].park_count));
+                            Index++;
+                        })
+
+                        $('.ParkingMes').css({display:'block'})
+                        parkOnff=false;
+
+
+
+                    }else {
+                        $('.PmesBox').remove();
+                        $('.ParkingMes').css({display:'none'})
+                        parkOnff=true;
+                    }
+
+                }
+
             },
             error: function(errmsg) {
                 console.log(errmsg);
@@ -58,13 +77,7 @@ $(function(){
 
 
 
-		/*if(parkOnff){
-           $('.ParkingMes').css({display:'block'})
-           parkOnff=false;
-		}else {
-			 $('.ParkingMes').css({display:'none'})
-			 parkOnff=true;
-		}*/
+
 	})
 	 map.plugin('AMap.Geolocation', function() {
            geolocation = new AMap.Geolocation({
@@ -148,7 +161,7 @@ var wwa=$('<div class="OutDorPoiBox POI_search"><div class="PoiIcon"><img src="a
 
        }
 
-    $('.MesOneleft:eq(0)').bind('touchstart',function(){
+   /* $('.MesOneleft:eq(0)').bind('touchstart',function(){
           var lngaa=121.510521;
           var lataa=31.236270;
 
@@ -163,7 +176,7 @@ var wwa=$('<div class="OutDorPoiBox POI_search"><div class="PoiIcon"><img src="a
         marker.setMap(map);
         map.setZoomAndCenter(18, [lngaa, lataa]);
         $('.ParkingMes').css({display:"none"})
-    });
+    });*/
     $('.MesOneleft:eq(1)').bind('touchstart',function(){
         var lngaa=121.498505;
         var lataa=31.236779;
