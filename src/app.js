@@ -35,6 +35,7 @@ $(function(){
 	})
     $('.amap-copyright').css({display:'none'});
 	var parkOnff=true;
+ 
 
 	$('.footIcotwo').bind('touchstart',function(){
         $.ajax({
@@ -49,15 +50,46 @@ $(function(){
                         console.log(e[0].name);
                         var Index=0;
                         e.forEach(function(){
-                            $('.ParkWrap').append('<div class="PmesBox"><div class="MesOneleft"><span class="ParkTitle">上海证券大厦停车场</span><div class="IcoPar"><a class="icoOne">车位：</a><span class="livingParking">28</span>/<span class="totalcount">100</span></div></div><div class="MesOneright"><img src="assets/images/btn_reservations%402x.png"></div></div>');
+                            $('.ParkWrap').append('<div class="PmesBox"><div class="MesOneleft"><span class="ParkTitle">上海证券大厦停车场</span><div class="IcoPar"><a class="icoOne">车位：</a><span class="livingParking">28</span>/<span class="totalcount">100</span></div></div><div class="MesOneright"><img src="assets/images/btn_reservations%402x.png"></div><div class="latone"></div><div class="lngone"></div></div>');
                             $('.ParkTitle').last().html(e[Index].name);
                             $('.livingParking').last().html(e[Index].empty);
-                            $('.totalcount').last().html((e[Index].park_count));
+                            $('.totalcount').last().html(e[Index].park_count);
+                            $('.lngone').last().html(e[Index].longitude);
+                            $('.latone').last().html(e[Index].latitude);
                             Index++;
+
                         })
+
+                        $('.PmesBox').click(function(){
+                             var _index=$(this).index();
+                             var lngone=document.getElementsByClassName('lngone');
+                             var latone=document.getElementsByClassName('latone');
+                              locationLng=lngone[_index].innerHTML;
+                              locationLat=latone[_index].innerHTML;
+                       marker = new AMap.Marker({
+                          icon: "http://webapi.amap.com/theme/v1.3/markers/n/mark_b.png",
+                          position: [locationLng, locationLat]
+                             });
+                              marker.setMap(map);
+                           map.setZoomAndCenter(18, [locationLng, locationLat]);
+                            $('.ParkingMes').css({display:'none'});
+                                parkOnff = !(parkOnff)
+                             console.log(latone[_index].innerHTML);
+                             console.log(lngone[_index].innerHTML);
+                              AMap.event.addListener(marker,'click',function () {
+                                     
+
+                                    infoWindow.open(map, marker.getPosition());
+
+
+                                    Off=true;
+                         })
+
+                            })
 
                         $('.ParkingMes').css({display:'block'})
                         parkOnff=false;
+
 
 
 
@@ -161,54 +193,6 @@ var wwa=$('<div class="OutDorPoiBox POI_search"><div class="PoiIcon"><img src="a
 
        }
 
-   /* $('.MesOneleft:eq(0)').bind('touchstart',function(){
-          var lngaa=121.510521;
-          var lataa=31.236270;
-
-        if (marker) {
-            marker.setMap(null);
-            marker = null;
-        }
-        marker = new AMap.Marker({
-            icon: "http://webapi.amap.com/theme/v1.3/markers/n/mark_b.png",
-            position: [lngaa, lataa]
-        });
-        marker.setMap(map);
-        map.setZoomAndCenter(18, [lngaa, lataa]);
-        $('.ParkingMes').css({display:"none"})
-    });*/
-    $('.MesOneleft:eq(1)').bind('touchstart',function(){
-        var lngaa=121.498505;
-        var lataa=31.236779;
-        if (marker) {
-            marker.setMap(null);
-            marker = null;
-        }
-        marker = new AMap.Marker({
-            icon: "http://webapi.amap.com/theme/v1.3/markers/n/mark_b.png",
-            position: [lngaa, lataa]
-        });
-        marker.setMap(map);
-        map.setZoomAndCenter(18, [lngaa, lataa]);
-        $('.ParkingMes').css({display:"none"})
-
-    });
-    $('.MesOneleft:eq(2)').bind('touchstart',function(){
-        var lngaa=121.501002;
-        var lataa=31.235785;
-        if (marker) {
-            marker.setMap(null);
-            marker = null;
-        }
-        marker = new AMap.Marker({
-            icon: "http://webapi.amap.com/theme/v1.3/markers/n/mark_b.png",
-            position: [lngaa, lataa]
-        });
-        marker.setMap(map);
-        map.setZoomAndCenter(18, [lngaa, lataa]);
-        $('.ParkingMes').css({display:"none"})
-
-    });
 
 
       
@@ -289,7 +273,7 @@ var wwa=$('<div class="OutDorPoiBox POI_search"><div class="PoiIcon"><img src="a
         $('#OutDoorMap').css({display:'block'});
         $('.searchPage').css({display:'none'});
         AMap.event.addListener(marker,'touchstart',function () {
-          console.log(1);
+          
 
             infoWindow.open(map, marker.getPosition());
 
@@ -303,7 +287,7 @@ var wwa=$('<div class="OutDorPoiBox POI_search"><div class="PoiIcon"><img src="a
 
     var title = '';
     var content = [];
-    content.push("<a href='dist/index.html'>进入室内</a>");
+    
       var infoWindow = new AMap.InfoWindow({
             isCustom: true,  //使用自定义窗体
             /* content: createInfoWindow(title, content.join("<br/>")),*/

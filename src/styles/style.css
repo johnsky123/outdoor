@@ -151,5 +151,11 @@
 	color:#333;
 }
 .amap-copyright{display:none}
+.latone{
+	display: none;
+}
+.lngone{
+	display: none;
+}
     
 
