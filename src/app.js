@@ -33,11 +33,17 @@ $(function(){
 		$('#OutDoorMap').css({display:'block'});
 		$('.LocationPage').css({display:'none'})
 	})
+    var infoWindow = new AMap.InfoWindow({
+        isCustom: true,  //使用自定义窗体
+        /* content: createInfoWindow(title, content.join("<br/>")),*/
+        content:createTwowindow()
+    });
     $('.amap-copyright').css({display:'none'});
 	var parkOnff=true;
  
 
 	$('.footIcotwo').bind('touchstart',function(){
+        $('.panel').css({display:'none'})
         $.ajax({
             type: "post",
             url: "http://222.73.146.46:8089/carseeker/nearPark/getNearParking",
@@ -76,14 +82,20 @@ $(function(){
                                 parkOnff = !(parkOnff)
                              console.log(latone[_index].innerHTML);
                              console.log(lngone[_index].innerHTML);
-                              AMap.event.addListener(marker,'click',function () {
+                          /*  map.on('click',function(){
+                                infoWindow.open(map, marker.getPosition());
+                            })*/
+                            marker.on('click',function(e){
+                                infoWindow.open(map, e.target.getPosition())
+                            })
+                             /* AMap.event.addListener(marker,'click',function () {
                                      
 
                                     infoWindow.open(map, marker.getPosition());
 
 
                                     Off=true;
-                         })
+                         })*/
 
                             })
 
@@ -288,11 +300,7 @@ var wwa=$('<div class="OutDorPoiBox POI_search"><div class="PoiIcon"><img src="a
     var title = '';
     var content = [];
     
-      var infoWindow = new AMap.InfoWindow({
-            isCustom: true,  //使用自定义窗体
-            /* content: createInfoWindow(title, content.join("<br/>")),*/
-            content:createTwowindow()
-          });
+
    
    
 
@@ -324,7 +332,7 @@ var wwa=$('<div class="OutDorPoiBox POI_search"><div class="PoiIcon"><img src="a
         var middle = document.createElement("div");
         middle.className = "info-middle";
         middle.style.backgroundColor = 'white';
-        middle.innerHTML = content;
+
 
         info.appendChild(middle);
         return info;
